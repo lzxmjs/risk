@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
+        
+        :root {
+            --bg-black: #1a1a1a;
+            --bg-white: #f9f9f9;
+            --gray-300: #d4d4d4;
+            --active-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 2rem;
+            height: 100vh;
+            max-height: -webkit-fill-available;
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f5f5f5 25%, transparent 25%) -50px 0,
+                        linear-gradient(225deg, #f5f5f5 25%, transparent 25%) -50px 0,
+                        linear-gradient(315deg, #f5f5f5 25%, transparent 25%),
+                        linear-gradient(45deg, #f5f5f5 25%, transparent 25%);
+            background-size: 100px 100px;
+            opacity: 0.08;
+            z-index: -1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--gray-300);
+            flex-shrink: 0;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--bg-black);
+            line-height: 1.2;
+        }
+
+        .sub-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #6d6d6d;
+        }
+
+        .tab-btn-group {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 4px;
+            margin-left: auto;
+        }
+
+        .tab-btn {
+            padding: 0.7rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: 2px solid var(--gray-300);
+            border-radius: 8px;
+            background: var(--bg-white);
+            color: var(--bg-black);
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            white-space: nowrap;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-black);
+            color: var(--bg-white);
+            border-color: var(--bg-black);
+            box-shadow: var(--active-shadow);
+        }
+
+        .tab-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 6px rgba(26, 26, 26, 0.2);
+        }
+
+        .tab-content-container {
+            flex: 1;
+            position: relative;
+            min-height: 400px;
+            margin-top: 1.5rem;
+            width: 100%;
+        }
+
+        .tab-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .risk-map-card {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-white);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem 2rem;
+            }
+            
+            .main-title {
+                font-size: 1.6rem;
+            }
+            
+            .tab-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .main-title {
+                font-size: 1.4rem;
+            }
+            
+            .sub-title {
+                font-size: 0.75rem;
+            }
+            
+            .tab-btn-group {
+                width: 100%;
+                margin-left: 0;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="geometric-bg"></div>
+    <div class="container">
+        <header class="header">
+            <div class="title-group">
+                <h1 class="main-title">洪水风险图</h1>
+                <span class="sub-title">Flood Risk Visualization</span>
+            </div>
+            <div class="tab-btn-group">
+                <button class="tab-btn active" data-tab="r5">5年一遇</button>
+                <button class="tab-btn" data-tab="r10">10年一遇</button>
+                <button class="tab-btn" data-tab="r20">20年一遇</button>
+                <button class="tab-btn" data-tab="r50">50年一遇</button>
+                <button class="tab-btn" data-tab="r100">100年一遇</button>
+            </div>
+        </header>
+
+        <div class="tab-content-container">
+            <div class="tab-content active" id="r5">
+                <div class="risk-map-card">
+                    <iframe src="https://lzxmjs.github.io/R5/" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="tab-content" id="r10">
+                <div class="risk-map-card">
+                    <iframe src="https://lzxmjs.github.io/R10/" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="tab-content" id="r20">
+                <div class="risk-map-card">
+                    <iframe src="https://lzxmjs.github.io/R20/" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="tab-content" id="r50">
+                <div class="risk-map-card">
+                    <iframe src="https://lzxmjs.github.io/R50/" loading="lazy"></iframe>
+                </div>
+            </div>
+            <div class="tab-content" id="r100">
+                <div class="risk-map-card">
+                    <iframe src="https://lzxmjs.github.io/R100/" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 标签切换功能
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            function activateTab(tabId) {
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                const targetBtn = document.querySelector(`[data-tab="${tabId}"]`);
+                targetBtn.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            }
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+            });
+
+            // 动态高度计算
+            function adjustLayout() {
+                const header = document.querySelector('.header');
+                const container = document.querySelector('.tab-content-container');
+                
+                if(header && container) {
+                    const headerHeight = header.offsetHeight;
+                    container.style.height = `calc(100vh - ${headerHeight + 32}px)`;
+                }
+            }
+
+            // 初始化执行
+            window.addEventListener('load', adjustLayout);
+            window.addEventListener('resize', adjustLayout);
+            adjustLayout(); // 立即执行一次
+        });
+    </script>
+</body>
+</html>
